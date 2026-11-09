@@ -1,0 +1,21 @@
+[project]
+name = "resume-generator"
+version = "0.1.0"
+description = "One-page resume PDF from YAML content and a Typst template."
+readme = "README.md"
+requires-python = ">=3.10"
+# build.py uses only the standard library; Typst itself is installed separately.
+dependencies = []
+
+[tool.uv]
+# A collection of scripts and tests, not an installable package.
+package = false
+
+[dependency-groups]
+dev = [
+    "pdfminer-six>=20260107",
+    "pymupdf>=1.28.2",
+    "pypdf>=7.0.0",
+    "pytest>=9.2.0",
+    "pyyaml>=6.0.3",
+]
