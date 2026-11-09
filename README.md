@@ -1,0 +1,46 @@
+# Resume generator
+
+Write the content in `resume.yaml`. `resume.typ` (a [Typst](https://typst.app) template) lays it out into a one-page PDF.
+
+## Usage
+
+The contact block (phone, email, links) lives in `contact.yaml`, which is gitignored so it never gets committed. On a fresh clone, create it from the example first:
+
+```
+cp contact.example.yaml contact.yaml    # then fill in your details
+```
+
+```
+typst compile resume.typ Kumpf_Resume.pdf     # build once
+typst watch   resume.typ Kumpf_Resume.pdf     # rebuild on every save
+```
+
+For a live side-by-side preview in VS Code, install the **Tinymist Typst** extension, open `resume.typ`, and click "Preview". The preview updates when you edit `resume.yaml`.
+
+### Tailored variants
+
+Copy `resume.yaml` to a new file (for example `resume_cpp.yaml`) and build from that copy:
+
+```
+typst compile resume.typ Kumpf_Resume_Cpp.pdf --input data=resume_cpp.yaml
+```
+
+## Tests
+
+Applicant tracking systems read the PDF's text, not the page image. `tests/test_text_extraction.py` builds every `resume*.yaml` and reads each PDF with pypdf, pdfminer.six, PyMuPDF, and poppler's `pdftotext`. Each extractor must return all of the YAML's text unbroken and in reading order. The `pdftotext` check is skipped if it's not on PATH.
+
+```
+python -m venv .venv
+.venv/Scripts/pip install -r requirements-dev.txt    # .venv/bin/pip on Linux/macOS
+.venv/Scripts/python -m pytest tests
+```
+
+## Editing content
+
+The comments at the top of `resume.yaml` explain the format: `**bold**`, `[label](url)`, bare URLs that become links automatically, and nested bullets.
+
+## Vertical spacing
+
+The template measures the content and splits the leftover page height across the gaps between sections and between entries. A section gap gets twice the share of an entry gap. When you remove a line, every gap grows a little. Growth is capped, so a much shorter resume leaves the extra space at the bottom instead of spreading out too far. If the content is too long, it spills onto page 2.
+
+You can tune this with the `spacing` and `style` blocks at the top of `resume.typ`: fonts, sizes, margins, indents, and minimum gap sizes.

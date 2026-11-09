@@ -1,0 +1,7 @@
+# Test dependencies. Install with: pip install -r requirements-dev.txt
+pytest
+pyyaml
+# PDF text extractors the tests read the resume with.
+pypdf
+pdfminer.six
+pymupdf

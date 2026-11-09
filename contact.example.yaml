@@ -1,0 +1,6 @@
+# Template for contact.yaml. Copy to contact.yaml (gitignored) and fill in.
+# One string per line of the top-right contact block; inline markup works.
+- "**Cell:** (555) 555-5555    **Email:** you@example.com."
+- "**Location:** City, State."
+- "**LinkedIn:** https://www.linkedin.com/in/your-name/"
+- "**GitHub:** https://github.com/your-name"

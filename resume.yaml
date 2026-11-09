@@ -1,0 +1,98 @@
+# Resume content. Edit this file, then run `typst compile resume.typ` (or
+# `typst watch resume.typ` to rebuild automatically on every save).
+#
+# Inline formatting available in any text field:
+#   **bold**                 -> bold
+#   [label](https://...)     -> link showing "label"
+#   https://...              -> bare URLs become links automatically
+#
+# YAML tip: wrap text in double quotes (as below). Quotes are required when a
+# line contains ": " or starts with *, [, {, or #.
+#
+# Bullets can nest: instead of a plain string, use
+#   - text: "Parent bullet"
+#     bullets:
+#       - "Child bullet"
+
+name: "Daniel Kumpf"
+
+# The contact block lives in contact.yaml, which is gitignored so phone and
+# email stay off GitHub. Copy contact.example.yaml to contact.yaml to start.
+
+sections:
+  - title: "Education"
+    entries:
+      - heading: "Cornell University – B.S. Applied & Engineering Physics · GPA 4.02"
+        dates: "May 2018"
+
+  - title: "Experience"
+    entries:
+      - heading: "SciTec, A Firefly Aerospace Company – Senior Staff Software Engineer"
+        dates: "Jul 2023 – Apr 2026"
+        bullets:
+          - "Contracted for the Missile Defense Agency to deliver a C++ application that uses satellite data to characterize and classify missiles in real time. It runs live today as part of the U.S. missile warning system."
+          - "Served as tech lead and architect for a 3-person C++ team, including one direct report: set coding standards, ran code reviews, and mentored developers."
+          - "Owned deployment across unclassified and secure networks of three fielded versions of the application."
+          - "Led verification and acceptance testing at each stage of deployment."
+          - "Represented SciTec as the technical contact with the customer, explaining changes in each release and incorporating customer feedback about live app performance."
+          - "Held a Top Secret / Sensitive Compartmented Information (TS/SCI) security clearance."
+        roles:
+          - title: "Staff Software Engineer"
+            dates: "Jul 2021 – Jul 2023"
+            bullets:
+              - text: "Led a team of 3 developers to refactor the application’s legacy C++ codebase into a version that is:"
+                bullets:
+                  - "Multi-threaded: reduced peak-load latency by 10x compared to the legacy system."
+                  - "Unit tested: coverage of 85% using GoogleTest, improved from 0% on the legacy system."
+                  - "Modern: uses C++20, CMake, RAII, move semantics, auto, lambdas, and the standard library."
+          - title: "Associate Engineer"
+            dates: "Nov 2019 – Jul 2021"
+            bullets:
+              - "Built a MATLAB GUI and backend for prototyping and visualizing algorithm candidates for the application."
+
+      - heading: "Moog Aircraft Group – Systems Development Engineer"
+        dates: "Jun 2018 – Oct 2019"
+        bullets:
+          - "Translated aircraft flight control actuator requirements into automated Python test procedures."
+          - "Executed test procedures in full-system hardware-in-the-loop labs and in simulated environments."
+      
+      - heading: "NASA Goddard Space Flight Center – Intern"
+        dates: "Summers 2016 and 2017"
+        bullets:
+          - text: "Evaluated a COTS telescope mount for use in a low-cost ground station for optical satellite communications."
+            bullets:
+              - "Scheduled nighttime sessions to track and image passing satellites."
+              - "Analyzed images in Python to characterize the mount’s target acquisition, drift, and jitter."
+
+      - heading: "Cornell Rocketry Team – Team Lead"
+        dates: "May 2016 – May 2017"
+        bullets:
+          - "Led the Cornell Rocketry Team to 3rd place of 50 teams in the 2017 NASA Student Launch competition."
+          - "Won the Project Review Award for “the best combination of written reviews and formal presentations”."
+
+  - title: "Personal Projects"
+    entries:
+      - heading: "Terrain Tracks (https://terraintracks.com)"
+        dates: "Jun – Aug 2026"
+        bullets:
+          - "Free website for visualizing hikes/mountain runs. See your recorded GPS track overlaid into a photo of the terrain you hiked on, or 3D print the track and surrounding terrain."
+          - "Implemented with Claude Code & Codex."
+
+      - heading: "Neural Networks Zero to Hero Course (by Andrej Karpathy)"
+        dates: "May 2026"
+        bullets:
+          - "Implemented scalar autograd from scratch, and back-propagated a PyTorch multi-layer perceptron by hand."
+          - "Built and trained a 14M-parameter GPT-style transformer to write Shakespeare-like text."
+
+      - heading: "Call of Ares"
+        dates: "2022"
+        bullets:
+          - "Online multiplayer board game (Python/pygame/pyinstaller, TCP server/clients), ~15k lines of code."
+          - "Players move heroes around a game board, using actions and items to fight opponents."
+          - "GitHub: https://github.com/danny-kumpf/call-of-ares, Demo video: https://youtu.be/tZw_biCFjOw"
+
+  - title: "Proficiencies"
+    entries:
+      - bullets:
+          - "C++, Python/PyTorch, MATLAB, Claude Code, Codex."
+          - "Concurrency, sensor data processing, Linux, Git, CMake, Gitlab CI, Docker, Jira."
