@@ -2,7 +2,7 @@
 
 [Resume content by Me; all else by Claude Opus 5.5]
 
-Write the content in `resume.yaml`. `resume.typ` (a [Typst](https://typst.app) template) lays it out into a one-page PDF.
+Automated resume formatting. You write the content in `resume.yaml`, then `resume.typ` (a [Typst](https://typst.app) template) lays it out into a one-page PDF. The format looks like this:
 
 ![Rendered resume, with placeholder contact details](docs/resume_preview.png)
 
