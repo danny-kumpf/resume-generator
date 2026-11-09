@@ -85,7 +85,7 @@ sections:
           - "Built and trained a 14M-parameter GPT-style transformer to write Shakespeare-like text."
 
       - heading: "Call of Ares"
-        dates: "2022"
+        dates: "2021 – 2022"
         bullets:
           - "Online multiplayer board game (Python/pygame/pyinstaller, TCP server/clients), ~15k lines of code."
           - "Players move heroes around a game board, using actions and items to fight opponents."

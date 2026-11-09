@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Tika config for tests/test_text_extraction.py: the PDF parser with PDFBox's
+     sortByPosition turned on (Tika's default leaves it off). Every other parser
+     keeps its defaults. -->
+<properties>
+  <parsers>
+    <parser class="org.apache.tika.parser.DefaultParser">
+      <parser-exclude class="org.apache.tika.parser.pdf.PDFParser"/>
+    </parser>
+    <parser class="org.apache.tika.parser.pdf.PDFParser">
+      <params>
+        <param name="sortByPosition" type="bool">true</param>
+      </params>
+    </parser>
+  </parsers>
+</properties>

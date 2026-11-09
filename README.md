@@ -1,8 +1,10 @@
 # Resume generator
 
-[Resume content by Me; all else by Claude Opus 5.5]
+[Resume content & this overview by Me; all else by Claude Opus 5.5]
 
-Automated resume formatting. You write the content in `resume.yaml`, then `resume.typ` (a [Typst](https://typst.app) template) lays it out into a one-page PDF. The format looks like this:
+Automated resume formatting. You write the content in `resume.yaml`, then `resume.typ` (a [Typst](https://typst.app) template) lays it out into a one-page PDF. Each build also tests a bunch of commonly-used PDF parsers to make sure they parse the PDF correctly.
+
+The format looks like this:
 
 ![Rendered resume, with placeholder contact details](docs/resume_preview.png)
 
@@ -17,9 +19,11 @@ cp contact.example.yaml contact.yaml    # then fill in your details
 ```
 
 ```
-uv run build.py            # build once
-uv run build.py --watch    # rebuild on every save
+uv run build.py            # build once, then run the tests
+uv run build.py --watch    # rebuild on every save, rerunning the tests each time
 ```
+
+Every build ends by running the [text-extraction tests](#tests), so you find out as soon as an edit makes some applicant tracking system misread the resume. If any test fails, the PDF is still written, but `build.py` prints `TESTS FAILED` and exits with an error.
 
 Each build writes two files:
 - `Kumpf_Resume.pdf`: the real resume, with your contact details from `contact.yaml`. It's gitignored.
@@ -37,11 +41,28 @@ typst compile resume.typ Kumpf_Resume_Cpp.pdf --input data=resume_cpp.yaml
 
 ## Tests
 
-Applicant tracking systems read the PDF's text, not the page image. `tests/test_text_extraction.py` builds every `resume*.yaml` and reads each PDF with pypdf, pdfminer.six, PyMuPDF, and poppler's `pdftotext`. Each extractor must return all of the YAML's text unbroken and in reading order. The `pdftotext` check is skipped if it's not on PATH.
+Applicant tracking systems read the PDF's text, not the page image. If their extractor scrambles your resume, the parser files your dates under the wrong job, or worse, and nobody tells you. `tests/test_text_extraction.py` builds every `resume*.yaml` and reads each PDF with the extractors that ATSes and resume parsers commonly use. Each extractor must return all of the YAML's text unbroken and in reading order.
+
+| Extractor | Used by |
+|---|---|
+| pypdf, pdfminer.six, pdfplumber, PyMuPDF | Python resume parsers and LLM-based screening pipelines |
+| PDFium (pypdfium2) | Chrome; Python pipelines |
+| Apache Tika (PDFBox), default and sorted by position | Java/enterprise ATSes, search indexers |
+| pdf.js | Firefox; JavaScript resume parsers |
+| poppler `pdftotext`, default and `-layout` | Linux servers; many parser wrappers |
+| xpdf `pdftotext` | xpdf tools, such as the copy bundled with Git for Windows |
 
 ```
-uv run pytest tests
+uv run pytest
 ```
+
+The Python extractors come from `uv.lock`. The others need tools installed on the system. When one is missing, its test is skipped, and pytest lists every skip and its reason at the end of the run.
+
+- **Java 11+** for Tika. The first run downloads the pinned Tika jar (about 64 MB) into `tests/.tools/` and checks its SHA-256.
+- **Node.js 20+** for pdf.js. The first run installs it from `tests/pdfjs/package-lock.json`.
+- **poppler** for `pdftotext`: `winget install oschwartz10612.Poppler` on Windows, `apt install poppler-utils` or `brew install poppler` elsewhere. The test tells poppler's `pdftotext` apart from xpdf's even when both are on PATH.
+
+`tests/extractors.py` explains the two kinds of extractor. Content-order readers emit text in the order the PDF draws it. Layout-analyzing readers regroup characters by position, so a wide blank gap can look like a column break to them. That's why `resume.typ` fills the gap between each title and its dates with spaces.
 
 The test dependencies are listed in `pyproject.toml` and pinned in `uv.lock`. Commit `uv.lock` so everyone gets the same versions.
 

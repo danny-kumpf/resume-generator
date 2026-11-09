@@ -1,0 +1,9 @@
+{
+  "name": "resume-pdfjs-extractor",
+  "private": true,
+  "description": "pdf.js (Firefox's PDF engine, also used by JavaScript resume parsers) for tests/test_text_extraction.py.",
+  "type": "module",
+  "dependencies": {
+    "pdfjs-dist": "6.4.299"
+  }
+}

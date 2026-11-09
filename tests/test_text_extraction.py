@@ -6,20 +6,25 @@ must recover every piece of text written in the YAML, unbroken, in the order a
 person would read it. That catches missing glyph-to-Unicode mappings, mangled
 ligatures or punctuation, words run together or split apart, and layout (such as
 the right-aligned dates) that pulls text out of reading order.
+
+If a content edit makes only a layout-analyzing extractor fail (poppler or xpdf
+pdftotext, pdfminer), the cause is almost always geometry, not a bug: a short
+date or a wide gap. That extractor's `known_fragility` note in extractors.py,
+printed with the failure, says what to change. Out-of-order failures mean a
+parser may pair a date or bullet with the wrong entry. "missing or garbled"
+failures mean the text itself is unreadable, which is far more serious.
 """
 
 import re
 import shutil
 import subprocess
-from collections.abc import Callable, Iterator
-from dataclasses import dataclass
+from collections.abc import Iterator
 from pathlib import Path
 
-import pymupdf
-import pypdf
 import pytest
 import yaml
-from pdfminer.high_level import extract_text as pdfminer_extract_text
+
+from extractors import EXTRACTORS
 
 REPO_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_PATH = REPO_DIR / "resume.typ"
@@ -107,49 +112,6 @@ def expected_fragments(yaml_path: Path, contact_path: Path) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-# Extractors
-# ---------------------------------------------------------------------------
-
-
-def extract_with_pypdf(pdf_path: Path) -> str:
-    return "\n".join(page.extract_text() for page in pypdf.PdfReader(pdf_path).pages)
-
-
-def extract_with_pdfminer(pdf_path: Path) -> str:
-    return pdfminer_extract_text(pdf_path)
-
-
-def extract_with_pymupdf(pdf_path: Path) -> str:
-    with pymupdf.open(pdf_path) as document:
-        return "\n".join(page.get_text() for page in document)
-
-
-def extract_with_pdftotext(pdf_path: Path) -> str:
-    executable = shutil.which("pdftotext")
-    if executable is None:
-        pytest.skip("pdftotext (poppler-utils) is not on PATH")
-    return subprocess.run(
-        [executable, "-enc", "UTF-8", str(pdf_path), "-"],
-        capture_output=True,
-        check=True,
-    ).stdout.decode("utf-8")
-
-
-@dataclass(frozen=True)
-class Extractor:
-    name: str
-    extract: Callable[[Path], str]
-
-
-EXTRACTORS = [
-    Extractor("pypdf", extract_with_pypdf),
-    Extractor("pdfminer.six", extract_with_pdfminer),
-    Extractor("PyMuPDF", extract_with_pymupdf),
-    Extractor("poppler pdftotext", extract_with_pdftotext),
-]
-
-
-# ---------------------------------------------------------------------------
 # Fixtures and tests
 # ---------------------------------------------------------------------------
 
@@ -194,8 +156,14 @@ def test_extracted_text_matches_yaml_in_reading_order(resume_build, extractor):
         else:
             problems.append(f"missing or garbled: {fragment!r}")
 
+    fragility_note = (
+        f"\n\nKnown fragility of {extractor.name}: {extractor.known_fragility}"
+        if extractor.known_fragility is not None
+        else ""
+    )
     assert not problems, (
-        f"{extractor.name} misread {pdf_path.name}:\n  "
+        f"{extractor.name} (used by {extractor.used_by}) misread {pdf_path.name}:\n  "
         + "\n  ".join(problems)
+        + fragility_note
         + f"\n\nFull extracted text:\n{extracted}"
     )

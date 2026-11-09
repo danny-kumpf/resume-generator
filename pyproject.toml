@@ -14,8 +14,16 @@ package = false
 [dependency-groups]
 dev = [
     "pdfminer-six>=20260107",
+    "pdfplumber>=0.11.10",
     "pymupdf>=1.28.2",
     "pypdf>=7.0.0",
+    "pypdfium2>=5.15.2",
     "pytest>=9.2.0",
     "pyyaml>=6.0.3",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Always list skipped tests with their reason: a skipped extractor is one this
+# machine cannot check, which should never look like a pass.
+addopts = "-rs"

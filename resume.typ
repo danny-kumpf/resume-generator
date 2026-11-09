@@ -26,7 +26,10 @@
   link-color: rgb("#1a1aa6"),
   margin: (left: 0.5in, right: 0.45in, top: 0.45in, bottom: 0.45in),
   bullet-indent: 0in,
-  bullet-body-indent: 0.16in,
+  // Gap between a bullet marker and its text. Keep it under about 0.15in:
+  // poppler's pdftotext treats a wider gap as a column break and reads all the
+  // markers before any of the bullet text (tests/test_text_extraction.py).
+  bullet-body-indent: 0.14in,
   // Rule under each section title, and the lighter rule between entries.
   section-rule: 1.2pt + black,
   entry-rule: 0.5pt + luma(150),
@@ -102,10 +105,17 @@
 }
 
 // A title on the left and (optional) dates flush right, on one line.
+//
+// The gap between them is filled with spaces rather than left empty. Spaces
+// are invisible, but they are real characters in the PDF's text layer, so
+// text extractors that group characters by position (pdfminer, and the
+// resume parsers built on it) see one line instead of a separate column of
+// dates, which they would otherwise splice into the middle of bullets. The
+// 1em box of spaces before the dates stands in for a column gutter.
 #let title-line(title, dates) = grid(
   columns: (1fr, auto),
-  column-gutter: 1em,
-  strong(rich(title)), strong(dates),
+  strong(rich(title)) + box(width: 1fr, repeat(" ")),
+  box(width: 1em, repeat(" ")) + strong(dates),
 )
 
 // A bullet is either a string, or a dictionary with `text` and nested `bullets`.
